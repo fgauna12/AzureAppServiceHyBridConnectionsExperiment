@@ -341,3 +341,4 @@ healthchecksdb
 
 iac/.terraform/
 iac/tf.plan
+iac/terraform.tfstate
