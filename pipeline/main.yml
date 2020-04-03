@@ -94,18 +94,13 @@ stages:
         backendAzureRmKey: 'infrastructure/terraform.tfstate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
 
-    - task: AzureCLI@2
-      displayName: "Terraform Plan, Apply"
-      inputs:
-        azureSubscription: $(AzureServiceConnection)
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          echo "planning"
-          terraform plan -out tf.plan -input=false
+    - bash: |
+        echo "planning"
+        terraform plan -out tf.plan -input=false
 
-          echo "applying"
-          terraform apply tf.plan -input=false
-        workingDirectory: ./iac/
+        echo "applying"
+        terraform apply tf.plan -input=false
+      workingDirectory: ./iac/
+      displayName: "Terraform Plan, Apply"
 
    
