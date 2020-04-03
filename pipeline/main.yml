@@ -17,6 +17,13 @@ variables:
   TerraformBackend.ResourceGroup: rg-potatoes-001
   TerraformBackend.StorageAccount: strpotatoestfrm01
   TerraformBackend.ContainerName: test
+  TF_VAR_APP_NAME: 'potatoes'
+  TF_VAR_ENVIRONMENT: 'test'
+  TF_VAR_LOCATION: 'eastus'
+  TF_VAR_VM_ADMIN_USERNAME: 'adminuser'
+  TF_VAR_AZURE_DEVOPS_ORGANIZATION: 'nebbiademo'
+  TF_VAR_AZURE_DEVOPS_TEAMPROJECT: 'New Signature Azure and DevOps Public'
+  TF_VAR_AZURE_DEVOPS_DEPLOYMENTGROUP: 'test'
 
 stages:
 - stage: build
@@ -89,25 +96,24 @@ stages:
         backendAzureRmKey: 'infrastructure/terraform.tfstate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
 
-    - bash: |
-        echo "planning $TF_VAR_app_name"
-        terraform plan -out tf.plan -input=false
+    - task: TerraformTaskV1@0
+      displayName: "Terraform Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+        environmentServiceNameAzureRM: $(AzureServiceConnection)
+        commandOptions: -input=false
 
-        echo "applying"
-        terraform apply tf.plan -input=false
-      workingDirectory: ./iac/
-      displayName: "Terraform Plan, Apply"
-      env: 
-        TF_VAR_app_name: 'potatoes'
-        TF_VAR_environment: 'test'
-        TF_VAR_location: 'eastus'
-        TF_VAR_vm_admin_username: 'adminuser'
-        TF_VAR_vm_admin_password: $(TF_VAR_admin_password)
-        TF_VAR_azure_devops_organization: 'nebbiademo'
-        TF_VAR_azure_devops_teamproject: 'New Signature Azure and DevOps Public'
-        TF_VAR_azure_devops_deploymentgroup: 'test'
-        TF_VAR_azure_devops_pat: $(TF_VAR_azure_devops_pat)
-        ARM_ACCESS_KEY: $(ARM_ACCESS_KEY)
+    - task: TerraformTaskV1@0
+      displayName: "Terraform Apply"
+      name:  TerraformApply
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+        environmentServiceNameAzureRM: $(AzureServiceConnection)
+        commandOptions: -input=false
         
 
    

@@ -1,7 +1,7 @@
 resource "azurerm_virtual_network" "virtual_network" {
   name                = local.vnet_name
   address_space       = ["10.0.0.0/16"]
-  location            = var.location
+  LOCATION            = var.LOCATION
   resource_group_name = azurerm_resource_group.resource_group.name
 }
 
@@ -14,20 +14,20 @@ resource "azurerm_subnet" "main_subnet" {
 
 resource "azurerm_network_interface" "nic" {
   name                = local.nsg_name
-  location            = var.location
+  LOCATION            = var.LOCATION
   resource_group_name = azurerm_resource_group.resource_group.name
 
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.main_subnet.id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_alLOCATION = "Dynamic"
     primary                       = true
   }
 
   ip_configuration {
     name                          = "public"
     subnet_id                     = azurerm_subnet.main_subnet.id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_alLOCATION = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
@@ -35,10 +35,10 @@ resource "azurerm_network_interface" "nic" {
 resource "azurerm_windows_virtual_machine" "vm" {
   name                = local.vm_name
   resource_group_name = azurerm_resource_group.resource_group.name
-  location            = var.location
+  LOCATION            = var.LOCATION
   size                = "Standard_F2"
-  admin_username      = var.vm_admin_username
-  admin_password      = var.vm_admin_password
+  admin_username      = var.VM_ADMIN_USERNAME
+  admin_password      = var.VM_ADMIN_PASSWORD
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
@@ -58,9 +58,9 @@ resource "azurerm_windows_virtual_machine" "vm" {
 
 resource "azurerm_public_ip" "public_ip" {
   name                    = local.public_ip
-  location                = var.location
+  LOCATION                = var.LOCATION
   resource_group_name     = azurerm_resource_group.resource_group.name
-  allocation_method       = "Dynamic"
+  alLOCATION_method       = "Dynamic"
   idle_timeout_in_minutes = 30
 }
 
@@ -74,16 +74,16 @@ resource "azurerm_virtual_machine_extension" "vm_extension_azuredevops" {
 
   settings = <<SETTINGS
     {
-        "VSTSAccountName": "${var.azure_devops_organization}",
-        "TeamProject": "${var.azure_devops_teamproject}",
-        "DeploymentGroup": "${var.azure_devops_deploymentgroup}",
+        "VSTSAccountName": "${var.AZURE_DEVOPS_ORGANIZATION}",
+        "TeamProject": "${var.AZURE_DEVOPS_TEAMPROJECT}",
+        "DeploymentGroup": "${var.AZURE_DEVOPS_DEPLOYMENTGROUP}",
         "AgentName": "${local.vm_name}"
     }
 SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
     {
-      "PATToken": "${var.azure_devops_pat}"
+      "PATToken": "${var.AZURE_DEVOPS_PAT}"
     }
 PROTECTED_SETTINGS
 }

@@ -1,35 +1,35 @@
-variable "app_name" {
+variable "APP_NAME" {
   type = string
 }
 
-variable "location" {
+variable "LOCATION" {
   type = string
 }
 
-variable "environment" {
+variable "ENVIRONMENT" {
   type = string
 }
 
-variable "vm_admin_username" {
+variable "VM_ADMIN_USERNAME" {
   type = string
 }
 
-variable "vm_admin_password" {
+variable "VM_ADMIN_PASSWORD" {
   type = string
 }
 
-variable "azure_devops_organization" {
+variable "AZURE_DEVOPS_ORGANIZATION" {
   type = string
 }
 
-variable "azure_devops_teamproject" {
+variable "AZURE_DEVOPS_TEAMPROJECT" {
   type = string
 }
 
-variable "azure_devops_deploymentgroup" {
+variable "AZURE_DEVOPS_DEPLOYMENTGROUP" {
   type = string
 }
 
-variable "azure_devops_pat" {
+variable "AZURE_DEVOPS_PAT" {
   type = string
 }
