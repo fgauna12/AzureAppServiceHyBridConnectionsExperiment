@@ -59,8 +59,6 @@ stages:
       TF_VAR_environment: 'test'
       TF_VAR_location: 'eastus'
       TF_VAR_admin_username: 'adminuser'
-      TF_VAR_storage_account_name: $(TerraformBackend.StorageAccount)
-      TF_VAR_container_name: $(TerraformBackend.ContainerName)
     steps:
     - task: AzureCLI@2
       displayName: "Azure Terraform Backend"
