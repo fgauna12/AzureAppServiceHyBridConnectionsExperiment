@@ -102,7 +102,7 @@ stages:
         scriptLocation: 'inlineScript'
         inlineScript: |
           echo "planning"
-          terraform plan -o tf.plan -input=false
+          terraform plan -out tf.plan -input=false
 
           echo "applying"
           terraform apply tf.plan -input=false
