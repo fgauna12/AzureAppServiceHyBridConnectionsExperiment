@@ -13,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  AzureServiceConnection: nebbia-partner-service-connection
   TerraformBackend.ResourceGroup: rg-potatoes-001
   TerraformBackend.StorageAccount: strpotatoestfrm01
   TerraformBackend.ContainerName: test
