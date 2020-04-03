@@ -89,13 +89,13 @@ stages:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          terraform init
+          terraform init -input=false
 
           echo "planning"
-          terraform plan -o tf.plan
+          terraform plan -o tf.plan -input=false
 
           echo "applying"
-          terraform apply tf.plan
+          terraform apply tf.plan -input=false
         workingDirectory: ./iac/
 
     # - task: TerraformTaskV1@0
