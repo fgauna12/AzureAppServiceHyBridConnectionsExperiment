@@ -1,38 +1,46 @@
 resource "azurerm_virtual_network" "virtual_network" {
-  name                = "example-network"
+  name                = local.vnet_name
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   resource_group_name = azurerm_resource_group.resource_group.name
 }
 
-resource "azurerm_subnet" "example" {
-  name                 = "internal"
+resource "azurerm_subnet" "main_subnet" {
+  name                 = local.subnet_name
   resource_group_name  = azurerm_resource_group.resource_group.name
   virtual_network_name = azurerm_virtual_network.virtual_network.name
   address_prefix       = "10.0.2.0/24"
 }
 
-resource "azurerm_network_interface" "example" {
-  name                = "example-nic"
+resource "azurerm_network_interface" "nic" {
+  name                = local.nsg_name
   location            = var.location
   resource_group_name = azurerm_resource_group.resource_group.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.example.id
+    subnet_id                     = azurerm_subnet.main_subnet.id
     private_ip_address_allocation = "Dynamic"
+    primary                       = true
+  }
+
+  ip_configuration {
+    name                          = "public"
+    subnet_id                     = azurerm_subnet.main_subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
 
-resource "azurerm_windows_virtual_machine" "example" {
-  name                = "example-machine"
+resource "azurerm_windows_virtual_machine" "vm" {
+  name                = local.vm_name
   resource_group_name = azurerm_resource_group.resource_group.name
   location            = var.location
   size                = "Standard_F2"
   admin_username      = var.vm_admin_username
   admin_password      = var.vm_admin_password
   network_interface_ids = [
-    azurerm_network_interface.example.id,
+    azurerm_network_interface.nic.id,
   ]
 
   os_disk {
@@ -46,4 +54,51 @@ resource "azurerm_windows_virtual_machine" "example" {
     sku       = "2016-Datacenter"
     version   = "latest"
   }
+}
+
+resource "azurerm_public_ip" "public_ip" {
+  name                    = local.public_ip
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.resource_group.name
+  allocation_method       = "Dynamic"
+  idle_timeout_in_minutes = 30
+}
+
+resource "azurerm_virtual_machine_extension" "vm_extension_azuredevops" {
+  name                       = "vm_extension_azuredevops"
+  virtual_machine_id         = azurerm_windows_virtual_machine.vm.id
+  publisher                  = "Microsoft.VisualStudio.Services"
+  type                       = "TeamServicesAgent"
+  type_handler_version       = "1.0"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+    {
+        "VSTSAccountName": "${var.azure_devops_organization}",
+        "TeamProject": "${var.azure_devops_teamproject}",
+        "DeploymentGroup": "${var.azure_devops_deploymentgroup}",
+        "AgentName": "${local.vm_name}"
+    }
+SETTINGS
+
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+      "PATToken": "${var.azure_devops_pat}"
+    }
+PROTECTED_SETTINGS
+}
+
+resource "azurerm_virtual_machine_extension" "vm_extension_install_iis" {
+  name                       = "vm_extension_install_iis"
+  virtual_machine_id         = azurerm_windows_virtual_machine.vm.id
+  publisher                  = "Microsoft.Compute"
+  type                       = "CustomScriptExtension"
+  type_handler_version       = "1.8"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+    {
+        "commandToExecute": "powershell -ExecutionPolicy Unrestricted Install-WindowsFeature -Name Web-Server -IncludeAllSubFeature -IncludeManagementTools"
+    }
+SETTINGS
 }

@@ -15,6 +15,11 @@ locals {
   application_insights_name = "ai-${var.app_name}-${var.environment}"
   app_service_name = "azapp-${var.app_name}-${var.environment}"
   app_service_plan_name = "azappsp-${var.app_name}-${var.environment}"
+  vm_name = "vmapp2${var.environment}001"
+  vnet_name = "vnet-${var.app_name}-${var.environment}-001"
+  subnet_name = "app2"
+  nsg_name = "nsg-${var.app_name}-${var.environment}-001"
+  public_ip = "pip-${var.app_name}-${var.environment}"
 }
 
 resource "azurerm_resource_group" "resource_group" {
