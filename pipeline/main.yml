@@ -49,16 +49,16 @@ stages:
 - stage: test
   dependsOn: ['build']
   displayName: Test
-  variables:
-    TF_VAR_app_name: 'potatoes'
-    TF_VAR_environment: 'test'
-    TF_VAR_location: 'eastus'
-    TF_VAR_admin_username: 'adminuser'
   jobs: 
   - job: job_test_iac
     displayName: 'Deploy IaC'
     pool:
       vmImage: 'ubuntu-latest'
+    variables:
+      TF_VAR_app_name: 'potatoes'
+      TF_VAR_environment: 'test'
+      TF_VAR_location: 'eastus'
+      TF_VAR_admin_username: 'adminuser'
     steps: 
     - task: AzureCLI@2
       displayName: "Azure Terraform Backend"
