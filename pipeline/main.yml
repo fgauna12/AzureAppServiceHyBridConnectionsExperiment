@@ -59,8 +59,6 @@ stages:
       TF_VAR_environment: 'test'
       TF_VAR_location: 'eastus'
       TF_VAR_admin_username: 'adminuser'
-      TF_VAR_storage_account_name: $(TerraformBackend.StorageAccount)
-      TF_VAR_container_name: $(TerraformBackend.ContainerName)
     steps:
     - task: AzureCLI@2
       displayName: "Azure Terraform Backend"
@@ -82,17 +80,27 @@ stages:
 
     - task: TerraformInstaller@0
       inputs:
-        terraformVersion: '0.12.20'
-    
-    - task: AzureCLI@2
+        terraformVersion: 'latest'
+
+    - task: TerraformTaskV1@0
       displayName: "Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        backendServiceArm: $(AzureServiceConnection)
+        backendAzureRmResourceGroupName: $(TerraformBackend.ResourceGroup)
+        backendAzureRmStorageAccountName: $(TerraformBackend.StorageAccount)
+        backendAzureRmContainerName: '$(TerraformBackend.ContainerName)'
+        backendAzureRmKey: 'infrastructure/terraform.tfstate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+
+    - task: AzureCLI@2
+      displayName: "Terraform Plan, Apply"
       inputs:
         azureSubscription: $(AzureServiceConnection)
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          terraform init -input=false
-
           echo "planning"
           terraform plan -o tf.plan -input=false
 
@@ -100,33 +108,4 @@ stages:
           terraform apply tf.plan -input=false
         workingDirectory: ./iac/
 
-    # - task: TerraformTaskV1@0
-    #   displayName: "Terraform Init"
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'init'
-    #     backendServiceArm: $(AzureServiceConnection)
-    #     backendAzureRmResourceGroupName: $(TerraformBackend.ResourceGroup)
-    #     backendAzureRmStorageAccountName: $(TerraformBackend.StorageAccount)
-    #     backendAzureRmContainerName: '$(TerraformBackend.ContainerName)'
-    #     backendAzureRmKey: 'infrastructure/terraform.tfstate'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-
-    # - task: TerraformTaskV1@0
-    #   displayName: "Terraform Plan"
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'plan'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-    #     environmentServiceNameAzureRM: $(AzureServiceConnection)
-    #     commandOptions: ""
-
-    # - task: TerraformTaskV1@0
-    #   displayName: "Terraform Apply"
-    #   name:  TerraformApply
-    #   inputs:
-    #     provider: 'azurerm'
-    #     command: 'apply'
-    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-    #     environmentServiceNameAzureRM: $(AzureServiceConnection)
-    #     commandOptions: ""
+   
