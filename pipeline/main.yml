@@ -96,7 +96,7 @@ stages:
 
           echo "applying"
           terraform apply tf.plan
-      workingDirectory: ./iac/
+        workingDirectory: ./iac/
 
     # - task: TerraformTaskV1@0
     #   displayName: "Terraform Init"
