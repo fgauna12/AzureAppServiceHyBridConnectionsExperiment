@@ -95,7 +95,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
 
     - bash: |
-        echo "planning"
+        echo "planning $TF_VAR_app_name"
         terraform plan -out tf.plan -input=false
 
         echo "applying"
