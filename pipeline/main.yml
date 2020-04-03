@@ -60,8 +60,6 @@ stages:
       TF_VAR_location: 'eastus'
       TF_VAR_admin_username: 'adminuser'
     steps:
-    - bash: |
-        echo "var name is $(TF_VAR_app_name)" 
     - task: AzureCLI@2
       displayName: "Azure Terraform Backend"
       inputs:
@@ -83,34 +81,50 @@ stages:
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '0.12.20'
-
-    - task: TerraformTaskV1@0
+    
+    - task: AzureCLI@2
       displayName: "Terraform Init"
       inputs:
-        provider: 'azurerm'
-        command: 'init'
-        backendServiceArm: $(AzureServiceConnection)
-        backendAzureRmResourceGroupName: $(TerraformBackend.ResourceGroup)
-        backendAzureRmStorageAccountName: $(TerraformBackend.StorageAccount)
-        backendAzureRmContainerName: '$(TerraformBackend.ContainerName)'
-        backendAzureRmKey: 'infrastructure/terraform.tfstate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+        azureSubscription: $(AzureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          terraform init
 
-    - task: TerraformTaskV1@0
-      displayName: "Terraform Plan"
-      inputs:
-        provider: 'azurerm'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-        environmentServiceNameAzureRM: $(AzureServiceConnection)
-        commandOptions: ""
+          echo "planning"
+          terraform plan -o tf.plan
 
-    - task: TerraformTaskV1@0
-      displayName: "Terraform Apply"
-      name:  TerraformApply
-      inputs:
-        provider: 'azurerm'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-        environmentServiceNameAzureRM: $(AzureServiceConnection)
-        commandOptions: ""
+          echo "applying"
+          terraform apply tf.plan
+      workingDirectory: ./iac/
+
+    # - task: TerraformTaskV1@0
+    #   displayName: "Terraform Init"
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'init'
+    #     backendServiceArm: $(AzureServiceConnection)
+    #     backendAzureRmResourceGroupName: $(TerraformBackend.ResourceGroup)
+    #     backendAzureRmStorageAccountName: $(TerraformBackend.StorageAccount)
+    #     backendAzureRmContainerName: '$(TerraformBackend.ContainerName)'
+    #     backendAzureRmKey: 'infrastructure/terraform.tfstate'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+
+    # - task: TerraformTaskV1@0
+    #   displayName: "Terraform Plan"
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'plan'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+    #     environmentServiceNameAzureRM: $(AzureServiceConnection)
+    #     commandOptions: ""
+
+    # - task: TerraformTaskV1@0
+    #   displayName: "Terraform Apply"
+    #   name:  TerraformApply
+    #   inputs:
+    #     provider: 'azurerm'
+    #     command: 'apply'
+    #     workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
+    #     environmentServiceNameAzureRM: $(AzureServiceConnection)
+    #     commandOptions: ""
