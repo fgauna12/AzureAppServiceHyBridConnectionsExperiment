@@ -59,7 +59,9 @@ stages:
       TF_VAR_environment: 'test'
       TF_VAR_location: 'eastus'
       TF_VAR_admin_username: 'adminuser'
-    steps: 
+    steps:
+    - bash: |
+        echo "var name is $(TF_VAR_app_name)" 
     - task: AzureCLI@2
       displayName: "Azure Terraform Backend"
       inputs:
