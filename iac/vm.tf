@@ -20,14 +20,14 @@ resource "azurerm_network_interface" "nic" {
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.main_subnet.id
-    private_ip_address_alLOCATION = "Dynamic"
+    private_ip_address_allocation = "Dynamic"
     primary                       = true
   }
 
   ip_configuration {
     name                          = "public"
     subnet_id                     = azurerm_subnet.main_subnet.id
-    private_ip_address_alLOCATION = "Dynamic"
+    private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 }
