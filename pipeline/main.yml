@@ -98,6 +98,8 @@ stages:
         backendAzureRmKey: 'infrastructure/terraform.tfstate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
 
+    - bash: echo "$TF_VAR_VM_ADMIN_PASSWORD"
+
     - task: TerraformTaskV1@0
       displayName: "Terraform Plan"
       inputs:
