@@ -51,8 +51,8 @@ stages:
   displayName: Test
   variables: 
     TF_VAR_APP_NAME: 'potatoes'
-    TF_VAR_ENVIRONMENT: 'test'
-    TF_VAR_LOCATION: 'eastus'
+    TF_VAR_environment: 'test'
+    TF_VAR_location: 'eastus'
     TF_VAR_VM_ADMIN_USERNAME: 'adminuser'
     TF_VAR_AZURE_DEVOPS_ORGANIZATION: 'nebbiademo'
     TF_VAR_AZURE_DEVOPS_TEAMPROJECT: 'New Signature Azure and DevOps Public'
