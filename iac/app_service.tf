@@ -1,6 +1,6 @@
 resource "azurerm_app_service" "app_service" {
   name                = local.app_service_name
-  location            = azurerm_resource_group.resource_group.LOCATION
+  location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
   app_service_plan_id = azurerm_app_service_plan.app_plan.id
 
@@ -24,7 +24,7 @@ resource "azurerm_app_service" "app_service" {
 
 resource "azurerm_app_service_plan" "app_plan" {
   name                = local.app_service_plan_name
-  location            = azurerm_resource_group.resource_group.LOCATION
+  location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
 
   sku {
