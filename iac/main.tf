@@ -9,7 +9,6 @@ terraform {
 }
 
 locals {
-  APP_NAME_alphanumeric = replace(replace(var.APP_NAME, "-", ""), "_", "")
   resource_group_name = "rg-${var.APP_NAME}-${var.ENVIRONMENT}"
   application_insights_name = "ai-${var.APP_NAME}-${var.ENVIRONMENT}"
   app_service_name = "azapp-${var.APP_NAME}-${var.ENVIRONMENT}"
