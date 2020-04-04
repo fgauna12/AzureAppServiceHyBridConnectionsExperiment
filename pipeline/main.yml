@@ -24,8 +24,6 @@ variables:
   TF_VAR_AZURE_DEVOPS_ORGANIZATION: 'nebbiademo'
   TF_VAR_AZURE_DEVOPS_TEAMPROJECT: 'New Signature Azure and DevOps Public'
   TF_VAR_AZURE_DEVOPS_DEPLOYMENTGROUP: 'test'
-  TF_VAR_VM_ADMIN_PASSWORD: $(TF_VAR_admin_password)
-  TF_VAR_AZURE_DEVOPS_PAT: $(TF_VAR_azure_devops_pat)
 
 stages:
 - stage: build
@@ -97,8 +95,6 @@ stages:
         backendAzureRmContainerName: '$(TerraformBackend.ContainerName)'
         backendAzureRmKey: 'infrastructure/terraform.tfstate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
-
-    - bash: echo "$TF_VAR_VM_ADMIN_PASSWORD"
 
     - task: TerraformTaskV1@0
       displayName: "Terraform Plan"
