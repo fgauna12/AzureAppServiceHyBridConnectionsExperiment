@@ -24,7 +24,7 @@ resource "azurerm_app_service" "app_service" {
 
 resource "azurerm_app_service_plan" "app_plan" {
   name                = local.app_service_plan_name
-  LOCATION            = azurerm_resource_group.resource_group.LOCATION
+  location            = azurerm_resource_group.resource_group.LOCATION
   resource_group_name = azurerm_resource_group.resource_group.name
 
   sku {

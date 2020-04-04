@@ -1,7 +1,7 @@
 resource "azurerm_virtual_network" "virtual_network" {
   name                = local.vnet_name
   address_space       = ["10.0.0.0/16"]
-  LOCATION            = var.LOCATION
+  location            = var.LOCATION
   resource_group_name = azurerm_resource_group.resource_group.name
 }
 
@@ -14,7 +14,7 @@ resource "azurerm_subnet" "main_subnet" {
 
 resource "azurerm_network_interface" "nic" {
   name                = local.nsg_name
-  LOCATION            = var.LOCATION
+  location            = var.LOCATION
   resource_group_name = azurerm_resource_group.resource_group.name
 
   ip_configuration {
@@ -35,7 +35,7 @@ resource "azurerm_network_interface" "nic" {
 resource "azurerm_windows_virtual_machine" "vm" {
   name                = local.vm_name
   resource_group_name = azurerm_resource_group.resource_group.name
-  LOCATION            = var.LOCATION
+  location            = var.LOCATION
   size                = "Standard_F2"
   admin_username      = var.VM_ADMIN_USERNAME
   admin_password      = var.VM_ADMIN_PASSWORD
@@ -58,9 +58,9 @@ resource "azurerm_windows_virtual_machine" "vm" {
 
 resource "azurerm_public_ip" "public_ip" {
   name                    = local.public_ip
-  LOCATION                = var.LOCATION
+  location                = var.LOCATION
   resource_group_name     = azurerm_resource_group.resource_group.name
-  alLOCATION_method       = "Dynamic"
+  allocation_method       = "Dynamic"
   idle_timeout_in_minutes = 30
 }
 
