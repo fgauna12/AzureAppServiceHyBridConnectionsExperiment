@@ -107,7 +107,7 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
         environmentServiceNameAzureRM: $(AzureServiceConnection)
-        commandOptions: -input=false
+        commandOptions: -input=false -var "AZURE_DEVOPS_PAT=$(TF_VAR_azure_devops_pat)" -var "VM_ADMIN_PASSWORD=$(TF_VAR_admin_password)"
 
     - task: TerraformTaskV1@0
       displayName: "Terraform Apply"
@@ -117,7 +117,7 @@ stages:
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
         environmentServiceNameAzureRM: $(AzureServiceConnection)
-        commandOptions: -input=false
+        commandOptions: -input=false -var "AZURE_DEVOPS_PAT=$(TF_VAR_azure_devops_pat)" -var "VM_ADMIN_PASSWORD=$(TF_VAR_admin_password)"
         
 
    
