@@ -26,6 +26,6 @@ resource "azurerm_resource_group" "resource_group" {
 
   tags {
     owner = "Facundo Gauna"
-    projectName = "CommScope Experiment"
+    projectName = "Azure Hybrid Connections Experiment"
   }
 }
