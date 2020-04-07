@@ -115,6 +115,26 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/iac/'
         environmentServiceNameAzureRM: $(AzureServiceConnection)
         commandOptions: -input=false -var "AZURE_DEVOPS_PAT=$(TF_VAR_azure_devops_pat)" -var "VM_ADMIN_PASSWORD=$(TF_VAR_admin_password)"
+    
+    - bash: |
+        APP_SERVICE_NAME=$(cat $(TerraformApply.jsonOutputVariablesPath) | jq '.app_service.value' -r)
+        echo "##vso[task.setvariable variable=Outputs.AppServiceName;isOutput=true]$APP_SERVICE_NAME"
+      name: TerraformOutputs
+      displayName: Parsing Terraform Outputs
+    
+  - job: job_test_deploy_api1
+    displayName: "Deploy API 1"
+    dependsOn: ['job_test_iac']
+    pool:
+      vmImage: 'window-latest'
+    variables:
+      appServiceName: $[ dependencies.job_test_iac.outputs['Outputs.AppServiceName'] ]
+    steps: 
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: $(AzureServiceConnection)
+        appName: $(AppServiceName)
+        package: $(System.ArtifactsDirectory)/**/*.zip   
         
 
    
