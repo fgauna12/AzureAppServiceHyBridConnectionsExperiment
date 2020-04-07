@@ -24,7 +24,7 @@ resource "azurerm_resource_group" "resource_group" {
   name     = local.resource_group_name
   location = var.LOCATION
 
-  tags {
+  tags = {
     owner = "Facundo Gauna"
     projectName = "Azure Hybrid Connections Experiment"
   }
